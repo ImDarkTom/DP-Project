@@ -3,76 +3,201 @@ import json
 from sqlalchemy import create_engine
 
 SQLITE_FILE_FILENAME="data.sqlite"
-DATASET_FILENAME="datasets/physical-activity.json"
+DATASET1_FILENAME="datasets/physical-activity.json"
+DATASET2_FILENAME="datasets/walkability-index.csv"
 
-# ------------
-# Loading Data
-# ------------
+ENGINE = create_engine(f'sqlite:///{SQLITE_FILE_FILENAME}', echo=False)
 
-print(f"Loading data from file '{DATASET_FILENAME}'...")
+def process_df1():
+    print("Processing dataset 1...")
 
-with open(DATASET_FILENAME, mode='r') as file:
-    data = json.load(file)
+    # ------------
+    # Loading Data
+    # ------------
 
-column_names: list[str] = list(map(lambda x: x['name'], data['meta']['view']['columns']))
+    print(f"Loading data from file '{DATASET1_FILENAME}'...")
 
-print(f"Creating Pandas DataFrame with data...")
+    with open(DATASET1_FILENAME, mode='r') as file:
+        data = json.load(file)
 
-df = pd.DataFrame(data['data'], columns=column_names)
+    column_names: list[str] = list(map(lambda x: x['name'], data['meta']['view']['columns']))
 
-# -------------
-# Cleaning Data
-# -------------
+    print(f"Creating Pandas DataFrame with data...")
 
-print("Cleaning data...")
+    df = pd.DataFrame(data['data'], columns=column_names)
 
-to_drop: list[str] = [ 
-    'sid', # just identifies each row
-    'id', # identifies each row
-    'position', # always 0, pointless data
-    'created_at', # always 1765553420
-    'created_meta', # always blank
-    'updated_at', # always 1765553420
-    'updated_meta', # always blank
-    'meta', # always '{ }'
-    'Datasource', # always 'Behavioral Risk Factor Surveillance System'
-    'Data_Value_Type', # always 'Value',
-    'GeoLocation', # not useful for our purposes
-]
+    # -------------
+    # Cleaning Data
+    # -------------
 
-# Remove unneeded cols
-df.drop(to_drop, inplace=True, axis=1)
-print("1. Removed unneeded cols from DataFrame")
+    print("Cleaning data...")
+
+    to_drop: list[str] = [ 
+        'sid', # just identifies each row
+        'id', # identifies each row
+        'position', # always 0, pointless data
+        'created_at', # always 1765553420
+        'created_meta', # always blank
+        'updated_at', # always 1765553420
+        'updated_meta', # always blank
+        'meta', # always '{ }'
+        'Datasource', # always 'Behavioral Risk Factor Surveillance System'
+        'Data_Value_Type', # always 'Value',
+        'GeoLocation', # not useful for our purposes
+    ]
+
+    # Remove unneeded cols
+    df.drop(to_drop, inplace=True, axis=1)
+    print("1. Removed unneeded cols from DataFrame")
 
 
-# YearStart and YearEnd should be identical, so merge them into one col called Year
-mask = df['YearStart'] != df['YearEnd']
+    # YearStart and YearEnd should be identical, so merge them into one col called Year
+    mask = df['YearStart'] != df['YearEnd']
 
-if (mask.sum() != 0):
-    # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.loc.html
-    bad_rows = df.loc[mask]
-    raise ValueError(
-        f"YearStart and YearEnd do not match for some rows: {bad_rows}"
+    # If there is a row where YearStart and YearEnd are not equal, throw this error
+    if (mask.sum() != 0):
+        # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.loc.html
+        bad_rows = df.loc[mask]
+        raise ValueError(
+            f"YearStart and YearEnd do not match for some rows: {bad_rows}"
+        )
+
+    # Set a year column just to year start
+    df['Year'] = df['YearStart']
+    df.drop(['YearStart', 'YearEnd'], inplace=True, axis=1)
+    print("2. Merged YearStart and YearEnd columns")
+
+
+    print("Finished cleaning DataFrame")
+
+    # ----------------
+    # Save to database
+    # ----------------
+    
+    print('Saving to SQLite database...')
+
+    df.to_sql(
+        "physical_activity",
+        con=ENGINE,
+        if_exists="replace",
+        index=True
     )
 
-# Set a year column just to year start
-df['Year'] = df['YearStart']
-df.drop(['YearStart', 'YearEnd'], inplace=True, axis=1)
-print("2. Merged YearStart and YearEnd columns")
+    print(f"Saved to '{SQLITE_FILE_FILENAME}'")
 
 
-print("Finished cleaning DataFrame")
+def process_df2():
+    print("Processing dataset 2...")
 
-# Save to database
-print('Saving to SQLite database...')
+    # -------------------
+    # Process 2nd dataset
+    # -------------------
 
-engine = create_engine(f'sqlite:///{SQLITE_FILE_FILENAME}', echo=False)
+    print(f"Loading data from file '{DATASET2_FILENAME}'...")
 
-df.to_sql(
-    "physical_activity",
-    con=engine,
-    if_exists="replace",
-    index=True
-)
+    with open(DATASET2_FILENAME, mode='r') as file:
+        print(f"Creating Pandas DataFrame with data...")
 
-print(f"Saved to '{SQLITE_FILE_FILENAME}'")
+        df2 = pd.read_csv(file)
+
+    # -------------
+    # Cleaning Data
+    # -------------
+
+    print("Cleaning data...")
+
+    # Remove all cols except state and walk index
+    # https://stackoverflow.com/a/53214704
+    df2 = df2.filter(['STATEFP', 'NatWalkInd'])
+    print("1. Removed unneeded cols from DataFrame")
+
+    df2 = df2.groupby("STATEFP", as_index=False)["NatWalkInd"].mean()
+    print("2. Averaged state walkability by mean")
+
+    # https://en.wikipedia.org/wiki/Federal_Information_Processing_Standard_state_code
+    fp_map = {
+        1: "AL",
+        2: "AK",
+        4: "AZ",
+        5: "AR",
+        6: "CA",
+        8: "CO",
+        9: "CT",
+        10: "DE",
+        11: "DC",
+        12: "FL",
+        13: "GA",
+        15: "HI",
+        16: "ID",
+        17: "IL",
+        18: "IN",
+        19: "IA",
+        20: "KS",
+        21: "KY",
+        22: "LA",
+        23: "ME",
+        24: "MD",
+        25: "MA",
+        26: "MI",
+        27: "MN",
+        28: "MS",
+        29: "MO",
+        30: "MT",
+        31: "NE",
+        32: "NV",
+        33: "NH",
+        34: "NJ",
+        35: "NM",
+        36: "NY",
+        37: "NC",
+        38: "ND",
+        39: "OH",
+        40: "OK",
+        41: "OR",
+        42: "PA",
+        44: "RI",
+        45: "SC",
+        46: "SD",
+        47: "TN",
+        48: "TX",
+        49: "UT",
+        50: "VT",
+        51: "VA",
+        53: "WA",
+        54: "WV",
+        55: "WI",
+        56: "WY"
+    }
+
+    df2['STATEAL'] = df2['STATEFP'].map(fp_map)
+
+    # Remove rows not in dict
+    df2.dropna(inplace=True)
+
+    print("3. Attached state alphanumeric code")
+
+    df2.drop(axis='columns', labels=['STATEFP'], inplace=True)
+
+    print("4. Removed STATEFP")
+
+    print("Finished cleaning DataFrame")
+
+    # ----------------
+    # Save to database
+    # ----------------
+
+    print("Saving to SQLite database...")
+
+    df2.to_sql(
+        "walkability_index",
+        con=ENGINE,
+        if_exists="replace",
+        index=True
+    )
+
+    print(f"Saved to '{SQLITE_FILE_FILENAME}'")
+
+
+if __name__ == "__main__":
+    process_df1()
+    process_df2()
