@@ -97,41 +97,15 @@ def process_df1():
 
     print("Finished cleaning DataFrame")
 
+    return df
+
     # ----------------
     # Save to database
     # ----------------
     
     print('Saving to SQLite database...')
 
-    df.to_sql(
-        "physical_activity",
-        con=ENGINE,
-        if_exists="replace",
-        index=True,
-        dtype={
-            'LocationAbbr': types.TEXT,
-            'LocationDesc': types.TEXT,
-            'Class': types.TEXT,
-            'Topic': types.TEXT,
-            'Question': types.TEXT,
-            'Data_Value_Unit': types.TEXT,
-            'Data_Value': types.FLOAT,
-            'Low_Confidence_Limit': types.FLOAT,
-            'High_Confidence_Limit': types.FLOAT,
-            'Sample_Size': types.REAL,
-            'Total': types.TEXT,
-            'ClassID': types.TEXT,
-            'TopicID': types.TEXT,
-            'QuestionID': types.TEXT,
-            'DataValueTypeID': types.TEXT,
-            'StratificationCategory1': types.TEXT,
-            'Stratification1': types.TEXT,
-            'StratificationCategoryId1': types.TEXT,
-            'StratificationID1': types.TEXT,
-            'Year': types.NUMERIC,
-            'MissingData': types.BOOLEAN
-        }
-    )
+    
 
     print(f"Saved to '{SQLITE_FILE_FILENAME}'")
 
@@ -219,37 +193,68 @@ def process_df2():
         56: "WY"
     }
 
-    df2['STATEAL'] = df2['STATEFP'].map(fp_map)
+    df2['LocationAbbr'] = df2['STATEFP'].map(fp_map)
 
     # Remove rows not in dict
     df2.dropna(inplace=True)
 
-    print("3. Attached state alphanumeric code")
+    print("3. Attached state alphanumeric as LocationAbbr")
 
-    df2.drop(axis='columns', labels=['STATEFP'], inplace=True)
+    
+    df2['Walkability_Index'] = df2['NatWalkInd']
+    print ("4. Renamed NatWalkInd into Walkability_Index")
 
-    print("4. Removed STATEFP")
+    df2.drop(axis='columns', labels=['STATEFP', 'NatWalkInd'], inplace=True)
 
-    print("Finished cleaning DataFrame")
+    print("4. Removed STATEFP and old NatWalkInd cols")
 
-    # ----------------
-    # Save to database
-    # ----------------
+    print("Finished cleaning DataFrame 2")
 
-    print("Saving to SQLite database...")
+    return df2
 
-    df2.to_sql(
-        "walkability_index",
+def merge_datasets(df1, df2):
+    print("Mering DataFrames on LocationAbbr...")
+    df = pd.merge(df1, df2, on='LocationAbbr')
+
+    print("Saving merged DataFrame to DB...")
+    df.to_sql(
+        "merged_dataset",
         con=ENGINE,
         if_exists="replace",
-        index=True
+        index=True,
+        dtype={
+            'LocationAbbr': types.TEXT,
+            'LocationDesc': types.TEXT,
+            'Class': types.TEXT,
+            'Topic': types.TEXT,
+            'Question': types.TEXT,
+            'Data_Value_Unit': types.TEXT,
+            'Data_Value': types.FLOAT,
+            'Low_Confidence_Limit': types.FLOAT,
+            'High_Confidence_Limit': types.FLOAT,
+            'Sample_Size': types.REAL,
+            'Total': types.TEXT,
+            'ClassID': types.TEXT,
+            'TopicID': types.TEXT,
+            'QuestionID': types.TEXT,
+            'DataValueTypeID': types.TEXT,
+            'StratificationCategory1': types.TEXT,
+            'Stratification1': types.TEXT,
+            'StratificationCategoryId1': types.TEXT,
+            'StratificationID1': types.TEXT,
+            'Year': types.NUMERIC,
+            'MissingData': types.BOOLEAN,
+            'Walkability_Index': types.FLOAT,
+        }
     )
 
-    print(f"Saved to '{SQLITE_FILE_FILENAME}'")
+    print("Finished saving DataFrame to DB!")
 
 def process_datasets():
-    process_df1()
-    process_df2()
+    df1 = process_df1()
+    df2 = process_df2()
+    
+    merge_datasets(df1, df2)
 
 if __name__ == "__main__":
     process_datasets()

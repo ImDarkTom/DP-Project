@@ -1,7 +1,7 @@
 import pandas
 from sqlalchemy import create_engine
 
-SQLITE_FILE_FILENAME="data.sqlite"
+SQLITE_FILE_FILENAME="db.sqlite"
 
 ENGINE = create_engine(f'sqlite:///{SQLITE_FILE_FILENAME}', echo=False)
 

@@ -8,9 +8,9 @@ from lib.db import load_df_from_db
 df = load_df_from_db("physical_activity")
 
 def filter_stats(
-        region: Region,
-        stratID: StratID,
-        questionID: QuestionID,
+    region: Region,
+    stratID: StratID,
+    questionID: QuestionID,
 ):
     return df \
         .loc[df['LocationAbbr'] == region.value] \
