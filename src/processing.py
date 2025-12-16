@@ -1,13 +1,12 @@
 import pandas as pd
 import json
-from sqlalchemy import create_engine, types
+from sqlalchemy import types
 import warnings
 
-SQLITE_FILE_FILENAME="data.sqlite"
+from lib.db import ENGINE, SQLITE_FILE_FILENAME
+
 DATASET1_FILENAME="datasets/physical-activity.json"
 DATASET2_FILENAME="datasets/walkability-index.csv"
-
-ENGINE = create_engine(f'sqlite:///{SQLITE_FILE_FILENAME}', echo=False)
 
 def process_df1():
     print("Processing dataset 1...")

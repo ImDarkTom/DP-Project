@@ -1,17 +1,20 @@
 import requests
 
-from src.utils import ensure_dir
+from utils import ensure_dir
 
-DATASET1_FILENAME="datasets/physical-activity.json"
-DATASET2_FILENAME="datasets/walkability-index.csv"
+DATASET1_FILENAME = "datasets/physical-activity.json"
+DATASET2_FILENAME = "datasets/walkability-index.csv"
+
+DATASET1_URL: str = "https://data.cdc.gov/api/views/hn4x-zwk7/rows.json"
+DATASET1_QUERY_PARAMS = { "accessType": "DOWNLOAD" }
+
+DATASET2_URL = "https://edg.epa.gov/EPADataCommons/public/OA/EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv"
+
 
 # Dataset 1: Nutrition, Physical Activity, and Obesity
 # Source: data.gov
 # URL: https://catalog.data.gov/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system
 def download_ds1():
-    DATASET1_URL: str = "https://data.cdc.gov/api/views/hn4x-zwk7/rows.json"
-    DATASET1_QUERY_PARAMS = { "accessType": "DOWNLOAD" }
-
     print("Starting download of dataset 1...")
 
     response = requests.get(DATASET1_URL, params=DATASET1_QUERY_PARAMS, stream=True)
@@ -32,11 +35,9 @@ def download_ds1():
 # Source: data.gov
 # URL: https://catalog.data.gov/dataset/walkability-index8
 def download_ds2():
-    DATASET2_URL = "https://edg.epa.gov/EPADataCommons/public/OA/EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv"
+    print("Starting download of dataset 2...")
 
     response = requests.get(DATASET2_URL, stream=True)
-
-    print("Starting download of dataset 2...")
 
     with open(DATASET2_FILENAME, mode="wb") as file:
         total_downloaded: int = 0
