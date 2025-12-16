@@ -3,8 +3,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
 
-from enums import *
-from utils import ensure_dir
+from src.enums import *
+from src.utils import ensure_dir
 
 SQLITE_FILE_FILENAME="data.sqlite"
 

@@ -1,6 +1,6 @@
 import requests
 
-from utils import ensure_dir
+from src.utils import ensure_dir
 
 DATASET1_FILENAME="datasets/physical-activity.json"
 DATASET2_FILENAME="datasets/walkability-index.csv"
@@ -49,7 +49,10 @@ def download_ds2():
 
     print("Finished downloading dataset 2")
 
-if __name__ == "__main__":
+def download_datasets():
     ensure_dir('./datasets/')
     download_ds1()
     download_ds2()
+
+if __name__ == "__main__":
+    download_datasets()

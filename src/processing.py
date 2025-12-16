@@ -248,7 +248,9 @@ def process_df2():
 
     print(f"Saved to '{SQLITE_FILE_FILENAME}'")
 
-
-if __name__ == "__main__":
+def process_datasets():
     process_df1()
     process_df2()
+
+if __name__ == "__main__":
+    process_datasets()
