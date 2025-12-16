@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 from sqlalchemy import create_engine
+import warnings
 
 SQLITE_FILE_FILENAME="data.sqlite"
 DATASET1_FILENAME="datasets/physical-activity.json"
@@ -44,12 +45,12 @@ def process_df1():
         'Datasource', # always 'Behavioral Risk Factor Surveillance System'
         'Data_Value_Type', # always 'Value',
         'GeoLocation', # not useful for our purposes
+        'LocationID' # FIPS state code, not useful since we have LocationAbbr
     ]
 
     # Remove unneeded cols
-    df.drop(to_drop, inplace=True, axis=1)
+    df.drop(to_drop, inplace=True, axis="columns")
     print("1. Removed unneeded cols from DataFrame")
-
 
     # YearStart and YearEnd should be identical, so merge them into one col called Year
     mask = df['YearStart'] != df['YearEnd']
@@ -58,14 +59,41 @@ def process_df1():
     if (mask.sum() != 0):
         # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.loc.html
         bad_rows = df.loc[mask]
-        raise ValueError(
-            f"YearStart and YearEnd do not match for some rows: {bad_rows}"
-        )
+        warnings.warn(f"YearStart and YearEnd do not match for some rows: {bad_rows}")
 
     # Set a year column just to year start
     df['Year'] = df['YearStart']
     df.drop(['YearStart', 'YearEnd'], inplace=True, axis=1)
     print("2. Merged YearStart and YearEnd columns")
+
+
+    # Flag indicating missing data
+    df["MissingData"] = df["Data_Value_Footnote"].notna()
+    df.drop(
+        [ "Data_Value_Footnote", "Data_Value_Footnote_Symbol" ], 
+        inplace=True, 
+        axis="columns"
+    )
+    print("3. Flag for missing data column")
+
+
+    # We can safely remove these since Stratification info gives these to us anyway.
+    df.drop([
+        "Age(years)",
+        "Education",
+        "Sex",
+        "Income",
+        "Race/Ethnicity",
+    ], inplace=True, axis="columns")
+    print("4. Remove duplicate stratification info")
+
+    # Remove duplicate Data_Value_Alt col. Show warning if not identical.
+    # https://stackoverflow.com/a/73011295
+    results = df.query('Data_Value.notnull() & Data_Value != Data_Value_Alt')
+    if (results.size > 0):
+        warnings.warn(f"Data_Value and Data_Value_Alt not identical for some rows: {results}")
+
+    df.drop(['Data_Value_Alt'], inplace=True, axis="columns")
 
 
     print("Finished cleaning DataFrame")
