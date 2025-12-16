@@ -56,7 +56,6 @@ def visualisation1():
     plt.ylabel("% of population ")
 
     # Save to file
-    ensure_dir('./figures/')
     plt.savefig('./figures/figure1.png')
 
     plt.show()
@@ -77,15 +76,16 @@ def visualisation2():
     # plt.ylabel("% of population ")
 
     # Save to file
-    ensure_dir('./figures/')
     plt.savefig('./figures/figure2.png')
 
     plt.show()
 
 def visualise_data():
+    ensure_dir('./figures/')
     # Obesity and overweight change over time
-    # visualisation1()
+    visualisation1()
 
+    # Scatter plot
     visualisation2()
 
 if __name__ == "__main__":
