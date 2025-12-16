@@ -135,7 +135,7 @@ def process_df2():
     df2 = df2.filter(['STATEFP', 'NatWalkInd'])
     print("1. Removed unneeded cols from DataFrame")
 
-    df2 = df2.groupby("STATEFP", as_index=False)["NatWalkInd"].mean()
+    df2 = df2.groupby("STATEFP", as_index=False)["NatWalkInd"].mean().to_frame()
     print("2. Averaged state walkability by mean")
 
     # https://en.wikipedia.org/wiki/Federal_Information_Processing_Standard_state_code
@@ -199,14 +199,13 @@ def process_df2():
     df2.dropna(inplace=True)
 
     print("3. Attached state alphanumeric as LocationAbbr")
-
     
-    df2['Walkability_Index'] = df2['NatWalkInd']
+    df2.rename(columns={ 'NatWalkInd': 'Walkability_Index' }, inplace=True)
     print ("4. Renamed NatWalkInd into Walkability_Index")
 
-    df2.drop(axis='columns', labels=['STATEFP', 'NatWalkInd'], inplace=True)
+    df2.drop(axis='columns', labels=['STATEFP'], inplace=True)
 
-    print("4. Removed STATEFP and old NatWalkInd cols")
+    print("4. Removed old STATEFP col")
 
     print("Finished cleaning DataFrame 2")
 
@@ -214,7 +213,7 @@ def process_df2():
 
 def merge_datasets(df1, df2):
     print("Mering DataFrames on LocationAbbr...")
-    df = pd.merge(df1, df2, on='LocationAbbr')
+    df = pd.merge(df1, df2, on='LocationAbbr', how='left')
 
     print("Saving merged DataFrame to DB...")
     df.to_sql(
