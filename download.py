@@ -1,13 +1,9 @@
 import requests
-import os
+
+from utils import ensure_dir
 
 DATASET1_FILENAME="datasets/physical-activity.json"
 DATASET2_FILENAME="datasets/walkability-index.csv"
-
-def ensure_datasets_dir():
-    # Ensure `datasets/` folder exists
-    os.makedirs(os.path.dirname('./datasets/'), exist_ok=True)
-
 
 # Dataset 1: Nutrition, Physical Activity, and Obesity
 # Source: data.gov
@@ -54,6 +50,6 @@ def download_ds2():
     print("Finished downloading dataset 2")
 
 if __name__ == "__main__":
-    ensure_datasets_dir()
+    ensure_dir('./datasets/')
     download_ds1()
     download_ds2()

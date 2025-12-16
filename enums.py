@@ -1,0 +1,121 @@
+from enum import Enum
+
+class StratID(Enum):
+    """Stratification ID used in the physical activity dataset."""
+
+    INCOME_NOT_REPORTED = 'INCNR'
+    INCOME_LT_15K = 'INCLESS15'
+    INCOME_15K_TO_25K = 'INC1525'
+    INCOME_25K_TO_35K = 'INC2535'
+    INCOME_35K_TO_50K = 'INC3550'
+    INCOME_50K_TO_75K = 'INC5075'
+    INCOME_75K_PLUS = 'INC75PLUS'
+
+    AGE_18_TO_24 = 'AGEYR1824'
+    AGE_25_TO_34 = 'AGEYR2534'
+    AGE_35_TO_44 = 'AGEYR3544'
+    AGE_45_TO_55 = 'AGEYR4554'
+    AGE_55_TO_64 = 'AGEYR5564'
+    AGE_65_PLUS = 'AGEYR65PLUS'
+
+    RACE_MULTIPLE = 'RACE2PLUS'
+    RACE_NATIVE_AMERICAN = 'RACENAA'
+    RACE_ASIAN = 'RACEASN'
+    RACE_HAWAIAN_OR_PACIFIC = 'RACEHPI'
+    RACE_HISPANIC = 'RACEHIS'
+    RACE_WHITE = 'RACEWHT'
+    RACE_BLACK = 'RACEBLK'
+    RACE_OTHER = 'RACEOTH'
+
+    EDUCATION_LT_HIGHSCHOOL = 'EDUHS'
+    EDUCATION_HIGHSCHOOL_GRAD = 'EDUHSGRAD'
+    EDUCATION_SOME_COLLEGE_OR_TECH = 'EDUCOTEC'
+    EDUCATION_COLLEGE_GRAD = 'EDUCOGRAD'
+    
+    GENDER_FEMALE = 'FEMALE'
+    GENDER_MALE = 'MALE'
+
+    OVERALL = 'OVERALL'
+
+class QuestionID(Enum):
+    """Question ID used in the physical activity dataset."""
+
+    # Percent of adults aged 18 years and older who have obesity
+    OBESITY_18_PLUS = 'Q036'
+    # Percent of adults aged 18 years and older who have an overweight classification
+    OVERWEIGHT_18_PLUS ='Q037'
+    # Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)
+    MOD_AEROBIC_150_MIN = 'Q043'
+    # Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity (or an equivalent combination) and engage in muscle-strengthening activities on 2 or more days a week
+    MOD_AEROBIC_150_MIN_PLUS_MUSCLE_2_DAYS = 'Q044'
+    # Percent of adults who achieve more than 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)
+    MOD_AEROBIC_300_MIN = 'Q045'
+    # Percent of adults who engage in muscle-strengthening activities on 2 or more days a week
+    MUSCLE_2_DAYS = 'Q046'
+    # Percent of adults who engage in no leisure-time physical activity
+    NO_LEISURE_PHYS_ACTIVITY = 'Q047'
+    # Percent of adults who report consuming fruit less than one time daily
+    FRUIT_LT_ONCE_DAILY = 'Q018'
+    # Percent of adults who report consuming vegetables less than one time daily
+    VEG_LT_ONCE_DAILY = 'Q019'
+
+class Region(Enum):
+    """US Region used in both datasets."""
+
+    ALL = 'US'
+
+    ALABAMA = 'AL'
+    ALASKA = 'AK'
+    ARIZONA = 'AZ'
+    ARKANSAS = 'AR'
+    CALIFORNIA = 'CA'
+    COLORADA = 'CO'
+    CONNECTICUT = 'CT'
+    DELAWARE = 'DE'
+    DISTRICT_OF_COLUMBIA = 'DC'
+    FLORIDA = 'FL'
+    GEROGIA = 'GA'
+    HAWAII = 'HI'
+    IDAHO = 'ID'
+    ILLINOIS = 'IL'
+    INDIANA = 'IN'
+    IOWA = 'IA'
+    KANSAS = 'KS'
+    KENTUCKY = 'KY'
+    LOUISIANA = 'LA'
+    MAINE = 'ME'
+    MARYLAND = 'MD'
+    MASSACHUSETTS = 'MA'
+    MICHIGAN = 'MI'
+    MINNESOTA = 'MN'
+    MISSISSIPPI = 'MS'
+    MISSOURI = 'MO'
+    MONTANA = 'MT'
+    NEBRASKA = 'NE'
+    NEVADA = 'NV'
+    NEW_HAMPSHIRE = 'NH'
+    NEW_JERSEY = 'NJ'
+    NEW_MEXICO = 'NM'
+    NEW_YORK = 'NY'
+    NORTH_CAROLINA = 'NC'        
+    NORTH_DAKOTA = 'ND'          
+    OHIO = 'OH'
+    OKLAHOMA = 'OK'
+    OREGON = 'OR'
+    PENNSYLVANIA = 'PA'
+    RHODE_ISLAND = 'RI'          
+    SOUTH_CAROLINA = 'SC'        
+    SOUTH_DAKOTA = 'SD'          
+    TENNESSEE = 'TN'
+    TEXAS = 'TX'
+    UTAH = 'UT'
+    VERMONT = 'VT'
+    VIRGINIA = 'VA'
+    WASHINGTON = 'WA'
+    WEST_VIRGINIA = 'WV'         
+    WISCONSIN = 'WI'
+    WYOMING = 'WY'
+
+    GUAM = 'GU'
+    PUERTO_RICO = 'PR'
+    VIRGIN_ISLANDS = 'VI'

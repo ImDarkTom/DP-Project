@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, types
 import warnings
 
 SQLITE_FILE_FILENAME="data.sqlite"
@@ -108,7 +108,30 @@ def process_df1():
         "physical_activity",
         con=ENGINE,
         if_exists="replace",
-        index=True
+        index=True,
+        dtype={
+            'LocationAbbr': types.TEXT,
+            'LocationDesc': types.TEXT,
+            'Class': types.TEXT,
+            'Topic': types.TEXT,
+            'Question': types.TEXT,
+            'Data_Value_Unit': types.TEXT,
+            'Data_Value': types.FLOAT,
+            'Low_Confidence_Limit': types.FLOAT,
+            'High_Confidence_Limit': types.FLOAT,
+            'Sample_Size': types.REAL,
+            'Total': types.TEXT,
+            'ClassID': types.TEXT,
+            'TopicID': types.TEXT,
+            'QuestionID': types.TEXT,
+            'DataValueTypeID': types.TEXT,
+            'StratificationCategory1': types.TEXT,
+            'Stratification1': types.TEXT,
+            'StratificationCategoryId1': types.TEXT,
+            'StratificationID1': types.TEXT,
+            'Year': types.NUMERIC,
+            'MissingData': types.BOOLEAN
+        }
     )
 
     print(f"Saved to '{SQLITE_FILE_FILENAME}'")
