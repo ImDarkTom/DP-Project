@@ -30,8 +30,6 @@ pip install -r requirements.txt
 
 ### Option 1: Automatically Download, Process, & Visualise
 
-1. Download datasets.
-
 ```bash
 python3 main.py
 ```
