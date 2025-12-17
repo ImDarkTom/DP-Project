@@ -1,6 +1,6 @@
 from enum import Enum
 
-class StratID(Enum):
+class Strat(Enum):
     """Stratification ID used in the physical activity dataset."""
 
     INCOME_NOT_REPORTED = 'INCNR'
@@ -37,27 +37,27 @@ class StratID(Enum):
 
     OVERALL = 'OVERALL'
 
-class QuestionID(Enum):
+class QCol(Enum):
     """Question ID used in the physical activity dataset."""
 
-    # Percent of adults aged 18 years and older who have obesity
-    OBESITY_18_PLUS = 'Q036'
-    # Percent of adults aged 18 years and older who have an overweight classification
-    OVERWEIGHT_18_PLUS ='Q037'
-    # Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)
-    MOD_AEROBIC_150_MIN = 'Q043'
-    # Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity (or an equivalent combination) and engage in muscle-strengthening activities on 2 or more days a week
-    MOD_AEROBIC_150_MIN_PLUS_MUSCLE_2_DAYS = 'Q044'
-    # Percent of adults who achieve more than 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)
-    MOD_AEROBIC_300_MIN = 'Q045'
-    # Percent of adults who engage in muscle-strengthening activities on 2 or more days a week
-    MUSCLE_2_DAYS = 'Q046'
-    # Percent of adults who engage in no leisure-time physical activity
-    NO_LEISURE_PHYS_ACTIVITY = 'Q047'
-    # Percent of adults who report consuming fruit less than one time daily
-    FRUIT_LT_ONCE_DAILY = 'Q018'
-    # Percent of adults who report consuming vegetables less than one time daily
-    VEG_LT_ONCE_DAILY = 'Q019'
+    # Percent of adults aged 18 years and older who have obesity: 'Q036'
+    OBESITY_18_PLUS = 'OBESITY_18_PLUS'
+    # Percent of adults aged 18 years and older who have an overweight classification: Q037'
+    OVERWEIGHT_18_PLUS = 'OVERWEIGHT_18_PLUS'
+    # Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination): 'Q043'
+    MOD_AEROBIC_150_MIN = 'MOD_AEROBIC_150_MIN'
+    # Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity (or an equivalent combination) and engage in muscle-strengthening activities on 2 or more days a week: 'Q044'
+    MOD_AEROBIC_150_MIN_PLUS_MUSCLE_2_DAYS = 'MOD_AEROBIC_150_MIN_PLUS_MUSCLE_2_DAYS'
+    # Percent of adults who achieve more than 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination): 'Q045'
+    MOD_AEROBIC_300_MIN = 'MOD_AEROBIC_300_MIN'
+    # Percent of adults who engage in muscle-strengthening activities on 2 or more days a week: 'Q046'
+    MUSCLE_2_DAYS = 'MUSCLE_2_DAYS'
+    # Percent of adults who engage in no leisure-time physical activity: 'Q047'
+    NO_LEISURE_PHYS_ACTIVITY = 'NO_LEISURE_PHYS_ACTIVITY'
+    # Percent of adults who report consuming fruit less than one time daily: 'Q018'
+    FRUIT_LT_ONCE_DAILY = 'FRUIT_LT_ONCE_DAILY'
+    # Percent of adults who report consuming vegetables less than one time daily: 'Q019'
+    VEG_LT_ONCE_DAILY = 'VEG_LT_ONCE_DAILY'
 
 class Region(Enum):
     """US Region used in both datasets."""
