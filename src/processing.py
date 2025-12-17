@@ -99,17 +99,6 @@ def process_df1():
 
     return df
 
-    # ----------------
-    # Save to database
-    # ----------------
-    
-    print('Saving to SQLite database...')
-
-    
-
-    print(f"Saved to '{SQLITE_FILE_FILENAME}'")
-
-
 def process_df2():
     print("Processing dataset 2...")
 
@@ -215,7 +204,7 @@ def merge_datasets(df1, df2):
     print("Mering DataFrames on LocationAbbr...")
     df = pd.merge(df1, df2, on='LocationAbbr', how='left')
 
-    print("Saving merged DataFrame to DB...")
+    print('Saving merged DataFrame to SQLite database...')
     df.to_sql(
         "merged_dataset",
         con=ENGINE,
@@ -247,7 +236,8 @@ def merge_datasets(df1, df2):
         }
     )
 
-    print("Finished saving DataFrame to DB!")
+    print(f"Saved to '{SQLITE_FILE_FILENAME}'")
+
 
 def process_datasets():
     df1 = process_df1()

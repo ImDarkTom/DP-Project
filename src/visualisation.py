@@ -139,14 +139,83 @@ def visualisation2():
 
     plt.show()
 
+def visualisation3():
+    df_ov = filter_stats(Region.ALL, StratID.OVERALL, QuestionID.OVERWEIGHT_18_PLUS)
+    df_ob = filter_stats(Region.ALL, StratID.OVERALL, QuestionID.OBESITY_18_PLUS)
+
+    df_veg = filter_stats(Region.ALL, StratID.OVERALL, QuestionID.VEG_LT_ONCE_DAILY)
+    df_fru = filter_stats(Region.ALL, StratID.OVERALL, QuestionID.FRUIT_LT_ONCE_DAILY)
+
+    df_ov = df_ov[['Data_Value', 'Year']].rename(columns={'Data_Value': 'Overweight_Percent'})
+    df_ob = df_ob[['Data_Value', 'Year']].rename(columns={'Data_Value': 'Obese_Percent'})
+    df_veg = df_veg[['Data_Value', 'Year']].rename(columns={'Data_Value': 'Veg_LT_Daily_Percent'})
+    df_fru = df_fru[['Data_Value', 'Year']].rename(columns={'Data_Value': 'Fruit_LT_Daily_Percent'})
+
+    df2 = (
+        df_ov
+            .merge(df_ob, on='Year')
+            .merge(df_veg, on='Year')
+            .merge(df_fru, on='Year')
+    )
+
+    # Plot individually so we can customise the line styles
+
+    ax = df2.plot(
+        x="Year", 
+        y="Obese_Percent", 
+        color="tab:red",
+        linestyle="-",
+        label="% obese"
+    )
+
+    df2.plot(
+        x="Year", 
+        y="Overweight_Percent", 
+        color="tab:purple",
+        linestyle="-",
+        ax=ax,
+        label="% overweight"
+    )
+
+    df2.plot(
+        x="Year", 
+        y="Veg_LT_Daily_Percent", 
+        color="tab:green",
+        linestyle=":",
+        ax=ax,
+        label="% eating vegetables less than daily"
+    )
+
+    df2.plot(
+        x="Year", 
+        y="Fruit_LT_Daily_Percent", 
+        color="tab:blue",
+        linestyle=":",
+        ax=ax,
+        label="% eating fruit less than daily"
+    )
+
+    plt.title("Diet vs. Weight Class")
+    plt.xlabel("Year")
+    plt.ylabel("Adult Population (%)")
+
+    plt.tight_layout()
+
+    # Save to file
+    plt.savefig('./figures/figure3.png')
+
+    plt.show()
 
 def visualise_data():
     ensure_dir('./figures/')
     # Obesity and overweight change over time
-    visualisation1()
+    # visualisation1()
 
-    # Scatter plot
-    visualisation2()
+    # # weight class vs state avg walkability index
+    # visualisation2()
+
+    # # diet vs weight class
+    # visualisation3()
 
 if __name__ == "__main__":
     visualise_data()
