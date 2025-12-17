@@ -59,6 +59,9 @@ class QCol(Enum):
     # Percent of adults who report consuming vegetables less than one time daily: 'Q019'
     VEG_LT_ONCE_DAILY = 'VEG_LT_ONCE_DAILY'
 
+    # This is added by us, but we include it as it'll be in the final merged dataset
+    WALKABILITY_INDEX = 'WALKABILITY_INDEX'
+
 class Region(Enum):
     """US Region used in both datasets."""
 
