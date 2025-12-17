@@ -135,7 +135,7 @@ def process_df2():
     df2 = df2.filter(['STATEFP', 'NatWalkInd'])
     print("1. Removed unneeded cols from DataFrame")
 
-    df2 = df2.groupby("STATEFP", as_index=False)["NatWalkInd"].mean().to_frame()
+    df2 = df2.groupby("STATEFP", as_index=False)["NatWalkInd"].mean()
     print("2. Averaged state walkability by mean")
 
     # https://en.wikipedia.org/wiki/Federal_Information_Processing_Standard_state_code
@@ -200,7 +200,7 @@ def process_df2():
 
     print("3. Attached state alphanumeric as LocationAbbr")
     
-    df2.rename(columns={ 'NatWalkInd': 'Walkability_Index' }, inplace=True)
+    df2.rename(columns={ 'NatWalkInd': 'Walkability_Index' }, inplace=True) # type: ignore
     print ("4. Renamed NatWalkInd into Walkability_Index")
 
     df2.drop(axis='columns', labels=['STATEFP'], inplace=True)

@@ -1,12 +1,17 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 from enums import Region, QuestionID, StratID
 from utils import ensure_dir
 from lib.db import load_df_from_db
 
+# https://matplotlib.org/stable/gallery/color/named_colors.html
+
 matplotlib.use('tkagg')
+# https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html
+plt.style.use("seaborn-v0_8")
 
 df = load_df_from_db("merged_dataset")
 
@@ -53,7 +58,9 @@ def visualisation1():
 
     plt.title("% of adults over 18 that have obesity")
     plt.xlabel("Year")
-    plt.ylabel("% of population ")
+    plt.ylabel("Adult Population (%)")
+
+    plt.tight_layout()
 
     # Save to file
     plt.savefig('./figures/figure1.png')
@@ -61,24 +68,77 @@ def visualisation1():
     plt.show()
 
 def visualisation2():
-    res = filter_stats_year(2024, StratID.OVERALL, QuestionID.OBESITY_18_PLUS)
+    df_obese = filter_stats_year(2024, StratID.OVERALL, QuestionID.OBESITY_18_PLUS)
+    df_overweight = filter_stats_year(2024, StratID.OVERALL, QuestionID.OVERWEIGHT_18_PLUS)
 
-    res.rename(columns={ 'Data_Value': 'Percent_Obese' }, inplace=True)
-    
-    res.plot.scatter(
-        x="Walkability_Index", 
-        y="Percent_Obese",
-        c="Percent_Obese",
+    # https://www.statology.org/pandas-scatter-plot-multiple-columns/
+    ax = df_obese.plot(kind="scatter", 
+        x="Walkability_Index",
+        y="Data_Value", 
+        color="red", 
+        label="Obese %",
+        s=40,
+        alpha=0.7
     )
 
-    plt.title("State Walkability Index vs % of State population in 'Obese' weight class")
-    # plt.xlabel("Year")
-    # plt.ylabel("% of population ")
+    df_overweight.plot(kind="scatter", 
+        x="Walkability_Index", 
+        y="Data_Value", 
+        color="purple", 
+        label="Overweight %", 
+        s=40,
+        alpha=0.7,
+        ax=ax
+    )
 
-    # Save to file
+    # Correlation lines
+    # https://www.geeksforgeeks.org/data-visualization/how-to-draw-a-line-inside-a-scatter-plot/
+
+    # Obese
+    df_obese.dropna(inplace=True) # Otherwise we get an errror
+
+    x = df_obese['Walkability_Index']
+    y = df_obese['Data_Value']
+
+    slope, intercept = np.polyfit(x, y, 1)
+    line = slope * x + intercept
+
+    ax.plot(
+        x, 
+        line, 
+        linestyle='-',
+        color="tab:red",
+        alpha=0.9
+    )
+
+    
+    # Overweight
+    df_overweight.dropna(inplace=True) # Otherwise we get an errror
+
+    x = df_overweight['Walkability_Index']
+    y = df_overweight['Data_Value']
+
+    slope, intercept = np.polyfit(x, y, 1)
+    line = slope * x + intercept
+
+    ax.plot(
+        x, 
+        line, 
+        linestyle='-',
+        color="tab:purple",
+        alpha=0.9
+    )
+
+    ax.set_xlabel("Walkability Index")
+    ax.set_ylabel("Adult Population (%)")
+    ax.set_title("Walkability vs. Adult Population Weight Category")
+
+    plt.tight_layout()
+
     plt.savefig('./figures/figure2.png')
 
     plt.show()
+
 
 def visualise_data():
     ensure_dir('./figures/')
