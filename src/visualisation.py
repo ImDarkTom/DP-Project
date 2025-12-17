@@ -48,18 +48,18 @@ def visualisation1():
         x="YEAR", 
         y=QCol.OBESITY_18_PLUS.value,
         color="tab:red",
-        label="% Obese",
+        label="Obese",
     )
 
     w_df.plot(
         x="YEAR",
         y=QCol.OVERWEIGHT_18_PLUS.value,
         color="tab:purple",
-        label="% Overweight",
+        label="Overweight",
         ax=ax,
     )
 
-    plt.title("% of adults over 18 that have obesity")
+    plt.title("Weight Class of U.S. Adults")
     plt.xlabel("Year")
     plt.ylabel("Adult Population (%)")
 
