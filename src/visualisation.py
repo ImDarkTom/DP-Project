@@ -70,77 +70,74 @@ def visualisation1():
 
     plt.show()
 
-# def visualisation2():
-#     df_obese = filter_stats_year(2024, StratID.OVERALL, QuestionID.OBESITY_18_PLUS)
-#     df_overweight = filter_stats_year(2024, StratID.OVERALL, QuestionID.OVERWEIGHT_18_PLUS)
+def visualisation2():
+    w_df = df[
+        (df['YEAR'] == 2024) &
+        (df['STRATIFICATION'] == Strat.OVERALL.value)
+    ][['WALKABILITY_INDEX', QCol.OBESITY_18_PLUS.value, QCol.OVERWEIGHT_18_PLUS.value]]
 
-#     # https://www.statology.org/pandas-scatter-plot-multiple-columns/
-#     ax = df_obese.plot(kind="scatter", 
-#         x="Walkability_Index",
-#         y="Data_Value", 
-#         color="red", 
-#         label="Obese %",
-#         s=40,
-#         alpha=0.7
-#     )
+    # https://www.statology.org/pandas-scatter-plot-multiple-columns/
+    ax = w_df.plot(kind="scatter", 
+        x="WALKABILITY_INDEX",
+        y=QCol.OBESITY_18_PLUS.value, 
+        color="red", 
+        label="Obese",
+        s=40,
+        alpha=0.7
+    )
 
-#     df_overweight.plot(kind="scatter", 
-#         x="Walkability_Index", 
-#         y="Data_Value", 
-#         color="purple", 
-#         label="Overweight %", 
-#         s=40,
-#         alpha=0.7,
-#         ax=ax
-#     )
+    w_df.plot(kind="scatter", 
+        x="WALKABILITY_INDEX", 
+        y=QCol.OVERWEIGHT_18_PLUS.value, 
+        color="purple", 
+        label="Overweight", 
+        s=40,
+        alpha=0.7,
+        ax=ax
+    )
 
-#     # Correlation lines
-#     # https://www.geeksforgeeks.org/data-visualization/how-to-draw-a-line-inside-a-scatter-plot/
+    # Correlation lines
+    # https://www.geeksforgeeks.org/data-visualization/how-to-draw-a-line-inside-a-scatter-plot/
+    w_df.dropna(inplace=True) # Otherwise we get an errror
+    x = w_df['WALKABILITY_INDEX']
 
-#     # Obese
-#     df_obese.dropna(inplace=True) # Otherwise we get an errror
+    # Obese
+    y = w_df[QCol.OBESITY_18_PLUS.value]
 
-#     x = df_obese['Walkability_Index']
-#     y = df_obese['Data_Value']
+    slope, intercept = np.polyfit(x, y, 1)
+    line = slope * x + intercept
 
-#     slope, intercept = np.polyfit(x, y, 1)
-#     line = slope * x + intercept
-
-#     ax.plot(
-#         x, 
-#         line, 
-#         linestyle='-',
-#         color="tab:red",
-#         alpha=0.9
-#     )
-
+    ax.plot(
+        x, 
+        line, 
+        linestyle='-',
+        color="tab:red",
+        alpha=0.9
+    )
     
-#     # Overweight
-#     df_overweight.dropna(inplace=True) # Otherwise we get an errror
+    # Overweight
+    y = w_df[QCol.OVERWEIGHT_18_PLUS.value]
 
-#     x = df_overweight['Walkability_Index']
-#     y = df_overweight['Data_Value']
+    slope, intercept = np.polyfit(x, y, 1)
+    line = slope * x + intercept
 
-#     slope, intercept = np.polyfit(x, y, 1)
-#     line = slope * x + intercept
+    ax.plot(
+        x, 
+        line, 
+        linestyle='-',
+        color="tab:purple",
+        alpha=0.9
+    )
 
-#     ax.plot(
-#         x, 
-#         line, 
-#         linestyle='-',
-#         color="tab:purple",
-#         alpha=0.9
-#     )
+    ax.set_xlabel("Walkability Index")
+    ax.set_ylabel("Adult Population (%)")
+    ax.set_title("Walkability vs. Adult Population Weight Category")
 
-#     ax.set_xlabel("Walkability Index")
-#     ax.set_ylabel("Adult Population (%)")
-#     ax.set_title("Walkability vs. Adult Population Weight Category")
+    plt.tight_layout()
 
-#     plt.tight_layout()
+    plt.savefig('./figures/figure2.png')
 
-#     plt.savefig('./figures/figure2.png')
-
-#     plt.show()
+    plt.show()
 
 # def visualisation3():
 #     df_ov = filter_stats(Region.ALL, StratID.OVERALL, QuestionID.OVERWEIGHT_18_PLUS)
@@ -277,10 +274,10 @@ def visualisation1():
 def visualise_data():
     ensure_dir('./figures/')
     # Obesity and overweight change over time
-    visualisation1()
+    # visualisation1()
 
-    # # weight class vs state avg walkability index
-    # visualisation2()
+    # weight class vs state avg walkability index
+    visualisation2()
 
     # # diet vs weight class
     # visualisation3()
