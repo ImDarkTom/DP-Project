@@ -1,6 +1,6 @@
 import requests
 
-from utils import ensure_dir
+from src.utils import ensure_dir
 
 DATASET1_FILENAME = "datasets/physical-activity.json"
 DATASET2_FILENAME = "datasets/walkability-index.csv"

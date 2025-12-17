@@ -5,9 +5,9 @@ SQLITE_FILE_FILENAME="db.sqlite"
 
 ENGINE = create_engine(f'sqlite:///{SQLITE_FILE_FILENAME}', echo=False)
 
-def load_df_from_db(table_name: str):
+def load_df_from_db():
     return pandas.read_sql_table(
-        table_name,
+        "merged_dataset",
         con=ENGINE,
         index_col="index",
     )

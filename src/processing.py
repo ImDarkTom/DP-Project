@@ -3,7 +3,7 @@ import json
 from sqlalchemy import types
 import warnings
 
-from lib.db import ENGINE, SQLITE_FILE_FILENAME
+from src.lib.db import ENGINE, SQLITE_FILE_FILENAME
 
 DATASET1_FILENAME="datasets/physical-activity.json"
 DATASET2_FILENAME="datasets/walkability-index.csv"

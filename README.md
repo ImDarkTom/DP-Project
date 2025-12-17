@@ -40,20 +40,20 @@ python3 main.py
 1. Download datasets.
 
 ```bash
-python3 src/download.py
+python3 -m src.download
 ```
 
 2. Preprocess datasets and save to DB.
 
 ```bash
-python3 src/processing.py
+python3 -m src.processing
 ```
 
 
 2. Visualise datasets info and save charts.
 
 ```bash
-python3 src/visualisation.py
+python3 -m src.visualisation
 ```
 
 ## Visualisations
