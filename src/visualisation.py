@@ -206,6 +206,71 @@ def visualisation3():
 
     plt.show()
 
+def visualisation4():
+    df_ae15 = filter_stats_year(2024, StratID.OVERALL, QuestionID.MOD_AEROBIC_150_MIN)
+    df_ae30 = filter_stats_year(2024, StratID.OVERALL, QuestionID.MOD_AEROBIC_300_MIN)
+
+    df_ae15 = df_ae15[['Data_Value', 'LocationAbbr']].rename(columns={'Data_Value': 'Mod_Aerobic_150_Min'})
+    df_ae30 = df_ae30[['Data_Value', 'LocationAbbr']].rename(columns={'Data_Value': 'Mod_Aerobic_300_Min'})
+
+    print(df_ae15, df_ae30)
+
+    df2 = (
+        df_ae15
+            .merge(df_ae30, on='LocationAbbr')
+    )
+    
+    print(df2)
+
+    return
+    # Plot individually so we can customise the line styles
+
+    ax = df2.plot(
+        x="Year", 
+        y="Obese_Percent", 
+        color="tab:red",
+        linestyle="-",
+        label="% obese"
+    )
+
+    df2.plot(
+        x="Year", 
+        y="Overweight_Percent", 
+        color="tab:purple",
+        linestyle="-",
+        ax=ax,
+        label="% overweight"
+    )
+
+    df2.plot(
+        x="Year", 
+        y="Veg_LT_Daily_Percent", 
+        color="tab:green",
+        linestyle=":",
+        ax=ax,
+        label="% eating vegetables less than daily"
+    )
+
+    df2.plot(
+        x="Year", 
+        y="Fruit_LT_Daily_Percent", 
+        color="tab:blue",
+        linestyle=":",
+        ax=ax,
+        label="% eating fruit less than daily"
+    )
+
+    plt.title("Diet vs. Weight Class")
+    plt.xlabel("Year")
+    plt.ylabel("Adult Population (%)")
+
+    plt.tight_layout()
+
+    # Save to file
+    plt.savefig('./figures/figure3.png')
+
+    plt.show()
+
 def visualise_data():
     ensure_dir('./figures/')
     # Obesity and overweight change over time
@@ -216,6 +281,16 @@ def visualise_data():
 
     # # diet vs weight class
     # visualisation3()
+
+    # exercise vs walkability
+    visualisation4()
+
+
+    # todo: 
+    # - exercise vs walkability
+    # - exercise vs weight class
+    # - diet vs income
+
 
 if __name__ == "__main__":
     visualise_data()

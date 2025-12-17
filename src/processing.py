@@ -41,10 +41,25 @@ def process_df1():
         'updated_at', # always 1765553420
         'updated_meta', # always blank
         'meta', # always '{ }'
+        'LocationDesc', # We have this in enum format via LocationAbbr
+        'Class', # not useful
+        'ClassID',
+        'Topic', # not useful
+        'TopicID',
+        'StratificationCategory1', # not useful
+        'Stratification1', # Rendundant since we have StratificationID1 and the enum giving us info
+        'DataValueTypeID', # Always 'VALUE'
+        'Question', # Redundant since we have QuestionID and the enum giving us info
         'Datasource', # always 'Behavioral Risk Factor Surveillance System'
         'Data_Value_Type', # always 'Value',
+        'Data_Value_Unit', # added on data after 2023. Seems to be useless since all 'Data_Value's are percentages
         'GeoLocation', # not useful for our purposes
-        'LocationID' # FIPS state code, not useful since we have LocationAbbr
+        'LocationID', # FIPS state code, not useful since we have LocationAbbr
+        'Total', # Seems to just be 'TOTAL' if the stratification is 'OVERALL'
+        'Sample_Size', # we don't use this
+        'StratificationCategoryId1', # strat category ID, we don't use this 
+        'Low_Confidence_Limit', # we don't use this
+        'High_Confidence_Limit ' # we don't use this
     ]
 
     # Remove unneeded cols
@@ -62,19 +77,8 @@ def process_df1():
 
     # Set a year column just to year start
     df['Year'] = df['YearStart']
-    df.drop(['YearStart', 'YearEnd'], inplace=True, axis=1)
+    df.drop(['YearStart', 'YearEnd'], inplace=True, axis="columns")
     print("2. Merged YearStart and YearEnd columns")
-
-
-    # Flag indicating missing data
-    df["MissingData"] = df["Data_Value_Footnote"].notna()
-    df.drop(
-        [ "Data_Value_Footnote", "Data_Value_Footnote_Symbol" ], 
-        inplace=True, 
-        axis="columns"
-    )
-    print("3. Flag for missing data column")
-
 
     # We can safely remove these since Stratification info gives these to us anyway.
     df.drop([
@@ -94,6 +98,27 @@ def process_df1():
 
     df.drop(['Data_Value_Alt'], inplace=True, axis="columns")
 
+    # Pivot to better format data, based on `tests/test.py`
+    df = df.pivot(index=['LocationAbbr', 'StratificationID1', 'Year'], columns='QuestionID', values='Data_Value')
+
+    # rename indexes
+    # https://stackoverflow.com/a/41221249
+    df.index.set_names(['LOCATION', 'STRATIFICATION', 'YEAR'], inplace=True)
+
+    df.rename(columns={
+        'Q018': 'FRUIT_LT_ONCE_DAILY',
+        'Q019': 'VEG_LT_ONCE_DAILY',
+        'Q036': 'OBESITY_18_PLUS',
+        'Q037': 'OVERWEIGHT_18_PLUS',
+        'Q043': 'MOD_AEROBIC_150_MIN',
+        'Q044': 'MOD_AEROBIC_150_MIN_PLUS_MUSCLE_2_DAYS',
+        'Q045': 'MOD_AEROBIC_300_MIN',
+        'Q046': 'MUSCLE_2_DAYS',
+        'Q047': 'NO_LEISURE_PHYS_ACTIVITY',
+    }, inplace=True)
+
+    # https://www.geeksforgeeks.org/pandas/reverting-from-multiindex-to-single-index-dataframe-in-pandas/
+    df.reset_index(['LOCATION', 'STRATIFICATION', 'YEAR'], inplace=True)
 
     print("Finished cleaning DataFrame")
 
@@ -182,57 +207,52 @@ def process_df2():
         56: "WY"
     }
 
-    df2['LocationAbbr'] = df2['STATEFP'].map(fp_map)
+    df2['LOCATION'] = df2['STATEFP'].map(fp_map)
 
     # Remove rows not in dict
     df2.dropna(inplace=True)
-
     print("3. Attached state alphanumeric as LocationAbbr")
     
-    df2.rename(columns={ 'NatWalkInd': 'Walkability_Index' }, inplace=True) # type: ignore
-    print ("4. Renamed NatWalkInd into Walkability_Index")
+
+    df2.rename(columns={ 'NatWalkInd': 'WALKABILITY_INDEX' }, inplace=True) # type: ignore
+    print ("4. Renamed NatWalkInd into WALKABILITY_INDEX")
+
 
     df2.drop(axis='columns', labels=['STATEFP'], inplace=True)
-
     print("4. Removed old STATEFP col")
+
+    df2.set_index('LOCATION', inplace=True)
 
     print("Finished cleaning DataFrame 2")
 
     return df2
 
-def merge_datasets(df1, df2):
-    print("Mering DataFrames on LocationAbbr...")
-    df = pd.merge(df1, df2, on='LocationAbbr', how='left')
+def merge_datasets(df1: pd.DataFrame, df2: pd.Series):
+    print("Mering DataFrames on LOCATION...")
+    
+    df = df1.merge(df2, on='LOCATION', how='left')
 
     print('Saving merged DataFrame to SQLite database...')
+    
     df.to_sql(
         "merged_dataset",
         con=ENGINE,
         if_exists="replace",
         index=True,
         dtype={
-            'LocationAbbr': types.TEXT,
-            'LocationDesc': types.TEXT,
-            'Class': types.TEXT,
-            'Topic': types.TEXT,
-            'Question': types.TEXT,
-            'Data_Value_Unit': types.TEXT,
-            'Data_Value': types.FLOAT,
-            'Low_Confidence_Limit': types.FLOAT,
-            'High_Confidence_Limit': types.FLOAT,
-            'Sample_Size': types.REAL,
-            'Total': types.TEXT,
-            'ClassID': types.TEXT,
-            'TopicID': types.TEXT,
-            'QuestionID': types.TEXT,
-            'DataValueTypeID': types.TEXT,
-            'StratificationCategory1': types.TEXT,
-            'Stratification1': types.TEXT,
-            'StratificationCategoryId1': types.TEXT,
-            'StratificationID1': types.TEXT,
-            'Year': types.NUMERIC,
-            'MissingData': types.BOOLEAN,
-            'Walkability_Index': types.FLOAT,
+            'LOCATION': types.TEXT,
+            'STRATIFICATION': types.TEXT,
+            'YEAR': types.NUMERIC,
+            'OBESITY_18_PLUS': types.FLOAT,
+            'OVERWEIGHT_18_PLUS': types.FLOAT,
+            'MOD_AEROBIC_150_MIN': types.FLOAT,
+            'MOD_AEROBIC_150_MIN_PLUS_MUSCLE_2_DAYS': types.FLOAT,
+            'MOD_AEROBIC_300_MIN': types.FLOAT,
+            'MUSCLE_2_DAYS': types.FLOAT,
+            'NO_LEISURE_PHYS_ACTIVITY': types.FLOAT,
+            'FRUIT_LT_ONCE_DAILY': types.FLOAT,
+            'VEG_LT_ONCE_DAILY': types.FLOAT,
+            'WALKABILITY_INDEX': types.FLOAT,
         }
     )
 
@@ -241,8 +261,10 @@ def merge_datasets(df1, df2):
 
 def process_datasets():
     df1 = process_df1()
+    print("===== DF2 =====")
     df2 = process_df2()
-    
+
+    print('===== MERGE =====')
     merge_datasets(df1, df2)
 
 if __name__ == "__main__":

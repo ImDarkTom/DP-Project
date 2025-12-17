@@ -1,0 +1,1 @@
+This folder contains scripts for small-scale explorations of Pandas features.
