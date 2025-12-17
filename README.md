@@ -6,6 +6,7 @@ Libraries:
 - `pandas` for loading/analysing data.
 - `sqlalchemy` for storing DataFrames using SQLite.
 - `matplotlib` for visualising data insights.
+- `numpy` for correlation lines in charts.
 - `tk` to enable interactive GUI for matplotlib.
 
 ## Downloading
