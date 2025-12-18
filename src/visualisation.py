@@ -10,6 +10,8 @@ from src.visualisations.vis3 import visualisation3
 from src.visualisations.vis4 import visualisation4
 from src.visualisations.vis5 import visualisation5
 
+from src.enums import Strat
+
 # https://matplotlib.org/stable/gallery/color/named_colors.html
 
 matplotlib.use('tkagg')
@@ -36,6 +38,8 @@ def visualise_data():
 
     # weight model
     visualisation5(df)
+    visualisation5(df, Strat.AGE_18_TO_24, 'fig6_weight_class_model_age_18_24', 'Age 18-24', 'Population aged 18-24 (%)')
+    visualisation5(df, Strat.AGE_45_TO_55, 'fig7_weight_class_model_age_45_55', 'Age 45-55', 'Population aged 45-55 (%)')
 
     # todo: 
     # - diet vs income

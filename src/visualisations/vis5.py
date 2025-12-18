@@ -4,11 +4,17 @@ from sklearn.linear_model import LinearRegression
 
 from src.enums import QCol, Strat, Region
 
-def visualisation5(df: pd.DataFrame):
+def visualisation5(
+    df: pd.DataFrame, 
+    stratification: Strat = Strat.OVERALL, 
+    filename: str = 'fig5_weight_class_model',
+    title_suffix: str = 'Overall',
+    label: str = 'Adult Population (%)'
+):
     # After exploration 2021 is the latest date that has fruit/veg data
     df2 = df[
         (df['LOCATION'] == Region.ALL.value) &
-        (df['STRATIFICATION'] == Strat.OVERALL.value)
+        (df['STRATIFICATION'] == stratification.value)
     ][[
         'YEAR',
         QCol.OBESITY_18_PLUS.value,
@@ -79,14 +85,14 @@ def visualisation5(df: pd.DataFrame):
     )
 
     ax.set_xlabel("Year")
-    ax.set_ylabel("Adult Population (%)")
+    ax.set_ylabel(label)
 
     plt.tight_layout()
     plt.subplots_adjust(top=0.92) # otherwise title clips
 
-    plt.suptitle("Weight Class Model Prediction")
+    plt.suptitle("Weight Class Model Prediction - " + title_suffix)
 
-    plt.savefig('./figures/fig5_weight_class_model.png', dpi=300)
+    plt.savefig(f'./figures/{filename}.png', dpi=300)
 
     plt.show()
 
