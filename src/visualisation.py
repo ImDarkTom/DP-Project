@@ -8,6 +8,7 @@ from src.visualisations.vis1 import visualisation1
 from src.visualisations.vis2 import visualisation2
 from src.visualisations.vis3 import visualisation3
 from src.visualisations.vis4 import visualisation4
+from src.visualisations.vis5 import visualisation5
 
 # https://matplotlib.org/stable/gallery/color/named_colors.html
 
@@ -32,6 +33,9 @@ def visualise_data():
 
     # diet vs weight class
     visualisation4(df)
+
+    # weight model
+    visualisation5(df)
 
     # todo: 
     # - diet vs income
