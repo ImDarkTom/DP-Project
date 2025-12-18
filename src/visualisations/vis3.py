@@ -68,7 +68,7 @@ def visualisation3(df: pd.DataFrame):
         '≥150 min Aerobic Activity (%)',
         '≥150 min Aerobic + Muscle 2x/wk (%)',
         '≥300 min Aerobic Activity (%)',
-        'Muscle Strengthening ≥2x/wk (%)'
+        'Muscle Strengthening ≥ 2x/wk (%)'
     ], loc='upper right', bbox_to_anchor=(1, 0.94))
 
     fig.suptitle("Weekly Exercise vs. Walkability")
