@@ -17,17 +17,19 @@ def visualisation5(df: pd.DataFrame):
 
     df2.dropna(inplace=True)
 
-    x = df2['YEAR'].to_frame()
-    y = df2[QCol.OBESITY_18_PLUS.value].to_frame()
+    x_years = df2['YEAR'].to_frame()
 
-    model = LinearRegression()
-    model.fit(x, y)
+    # Predict Obesity
+    y_obesity = df2[QCol.OBESITY_18_PLUS.value].to_frame()
+
+    obesity_model = LinearRegression()
+    obesity_model.fit(x_years, y_obesity)
 
     future_years = pd.DataFrame({
-        "YEAR": range(df['YEAR'].min(), df['YEAR'].max() + 7)
+        "YEAR": range(df2['YEAR'].min(), df2['YEAR'].max() + 7)
     })
 
-    future_years["PREDICTED_OBESITY"] = model.predict(future_years)
+    future_years["PREDICTED_OBESITY"] = obesity_model.predict(future_years)
 
     prediction = pd.concat([df2, future_years], ignore_index=True)
 
@@ -46,6 +48,34 @@ def visualisation5(df: pd.DataFrame):
         alpha=0.5,
         ax=ax,
         label="Predicted Obese Population (%)"
+    )
+
+    # Predict Overweight
+    y_overweight = df2[QCol.OVERWEIGHT_18_PLUS.value].to_frame()
+
+    overweight_model = LinearRegression()
+    overweight_model.fit(x_years, y_overweight)
+
+    future_years["PREDICTED_OVERWEIGHT"] = overweight_model.predict(future_years['YEAR'].to_frame())
+
+    prediction = pd.concat([prediction, future_years], ignore_index=True)
+
+    prediction.plot(
+        x='YEAR',
+        y=QCol.OVERWEIGHT_18_PLUS.value,
+        color="tab:purple",
+        label="Observed Owerweight Population (%)",
+        ax=ax
+    )
+
+    prediction.plot(
+        x='YEAR',
+        y='PREDICTED_OVERWEIGHT',
+        color="tab:pink",
+        linestyle='--',
+        alpha=0.5,
+        ax=ax,
+        label="Predicted Overweight Population (%)"
     )
 
     ax.set_xlabel("Year")
