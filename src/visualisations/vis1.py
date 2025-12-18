@@ -32,7 +32,7 @@ def visualisation1(df: pd.DataFrame):
     plt.tight_layout()
 
     # Save to file
-    plt.savefig('./figures/figure1.png')
+    plt.savefig('./figures/fig1_weight_class.png', dpi=300)
 
     plt.show()
 

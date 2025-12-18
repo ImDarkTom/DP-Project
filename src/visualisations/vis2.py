@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 from src.enums import QCol, Strat
+from src.utils import plot_correlation
 
 def visualisation2(df: pd.DataFrame):
     w_df = df[
@@ -14,54 +15,26 @@ def visualisation2(df: pd.DataFrame):
     ax = w_df.plot(kind="scatter", 
         x="WALKABILITY_INDEX",
         y=QCol.OBESITY_18_PLUS.value, 
-        color="red", 
+        color="tab:red", 
         label="Obese",
-        s=40,
-        alpha=0.7
     )
 
     w_df.plot(kind="scatter", 
         x="WALKABILITY_INDEX", 
         y=QCol.OVERWEIGHT_18_PLUS.value, 
-        color="purple", 
+        color="tab:purple", 
         label="Overweight", 
-        s=40,
-        alpha=0.7,
         ax=ax
     )
 
     # Correlation lines
     # https://www.geeksforgeeks.org/data-visualization/how-to-draw-a-line-inside-a-scatter-plot/
-    w_df.dropna(inplace=True) # Otherwise we get an errror
+    w_df.dropna(inplace=True)
+
     x = w_df['WALKABILITY_INDEX']
 
-    # Obese
-    y = w_df[QCol.OBESITY_18_PLUS.value]
-
-    slope, intercept = np.polyfit(x, y, 1)
-    line = slope * x + intercept
-
-    ax.plot(
-        x, 
-        line, 
-        linestyle='-',
-        color="tab:red",
-        alpha=0.9
-    )
-    
-    # Overweight
-    y = w_df[QCol.OVERWEIGHT_18_PLUS.value]
-
-    slope, intercept = np.polyfit(x, y, 1)
-    line = slope * x + intercept
-
-    ax.plot(
-        x, 
-        line, 
-        linestyle='-',
-        color="tab:purple",
-        alpha=0.9
-    )
+    plot_correlation(x, w_df[QCol.OBESITY_18_PLUS.value], ax, "tab:red")
+    plot_correlation(x, w_df[QCol.OVERWEIGHT_18_PLUS.value], ax, "tab:purple")
 
     ax.set_xlabel("Walkability Index")
     ax.set_ylabel("Adult Population (%)")
@@ -69,7 +42,7 @@ def visualisation2(df: pd.DataFrame):
 
     plt.tight_layout()
 
-    plt.savefig('./figures/figure2.png')
+    plt.savefig('./figures/fig2_walkability_vs_weight.png', dpi=300)
 
     plt.show()
 
