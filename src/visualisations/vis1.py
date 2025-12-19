@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
-import pandas as pd
+
+from . import df
 
 from src.enums import Region, QCol, Strat
 
-def visualisation1(df: pd.DataFrame):
+
+def visualisation1():
     # Get year, values for obesity and overweight percentages, where location is all and strat is overall
     w_df = df[
         (df['LOCATION'] == Region.ALL.value) &
@@ -37,6 +39,4 @@ def visualisation1(df: pd.DataFrame):
     plt.show()
 
 if __name__ == "__main__":
-    from src.lib.db import load_df_from_db
-    
-    visualisation1(load_df_from_db())
+    visualisation1()

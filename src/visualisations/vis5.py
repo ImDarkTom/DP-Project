@@ -2,10 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
+from . import df
+
 from src.enums import QCol, Strat, Region
 
+
 def visualisation5(
-    df: pd.DataFrame, 
     stratification: Strat = Strat.OVERALL, 
     filename: str = 'fig5_weight_class_model',
     title_suffix: str = 'Overall',
@@ -97,6 +99,4 @@ def visualisation5(
     plt.show()
 
 if __name__ == "__main__":
-    from src.lib.db import load_df_from_db
-
-    visualisation5(load_df_from_db())
+    visualisation5()

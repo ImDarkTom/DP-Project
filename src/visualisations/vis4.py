@@ -1,10 +1,12 @@
-import pandas as pd
 import matplotlib.pyplot as plt
+
+from . import df
 
 from src.enums import QCol, Strat
 from src.utils import plot_correlation
 
-def visualisation4(df: pd.DataFrame):
+
+def visualisation4():
     # After exploration 2021 is the latest date that has fruit/veg data
     df2 = df[
         (df['YEAR'] == 2021) &
@@ -105,6 +107,4 @@ def visualisation4(df: pd.DataFrame):
     plt.show()
 
 if __name__ == "__main__":
-    from src.lib.db import load_df_from_db
-
-    visualisation4(load_df_from_db())
+    visualisation4()

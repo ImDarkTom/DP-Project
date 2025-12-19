@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
+
+from . import df
 
 from src.enums import QCol, Strat
 from src.utils import plot_correlation
 
-def visualisation2(df: pd.DataFrame):
+
+def visualisation2():
     w_df = df[
         (df['YEAR'] == 2024) &
         (df['STRATIFICATION'] == Strat.OVERALL.value)
@@ -47,6 +48,4 @@ def visualisation2(df: pd.DataFrame):
     plt.show()
 
 if __name__ == "__main__":
-    from src.lib.db import load_df_from_db
-    
-    visualisation2(load_df_from_db())
+    visualisation2()
