@@ -8,6 +8,7 @@ Libraries:
 - `matplotlib` for visualising data insights.
 - `numpy` for correlation lines in charts.
 - `tk` to enable interactive GUI for matplotlib.
+- `scikit-learn` for linear regression models used for predictions.
 
 ## Downloading
 
@@ -22,7 +23,7 @@ cd DP-Project/
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate # Or on Windows, `venv\Scripts\activate`
+source venv/bin/activate # Or on Windows, `.\venv\Scripts\activate`
 pip install -r requirements.txt
 ```
 
@@ -57,4 +58,6 @@ python3 -m src.visualisation
 
 ## Visualisations
 
-Once ran, visualisations will be displayed both on-screen and saved to the directory `figures/`.
+Once ran, visualisations will be displayed both on-screen and saved into the `figures/` directory.
+
+To run an individual visualisation, you can run each visualisation file as a module. E.g. `python3 -m src.visualisations.vis1`. 
