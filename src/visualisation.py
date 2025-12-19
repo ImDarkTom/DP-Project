@@ -6,6 +6,7 @@ from src.visualisations.vis2 import visualisation2
 from src.visualisations.vis3 import visualisation3
 from src.visualisations.vis4 import visualisation4
 from src.visualisations.vis5 import visualisation5
+from src.visualisations.vis6 import visualisation6
 
 from src.enums import Strat
 
@@ -33,9 +34,11 @@ def visualise_data():
     visualisation5(df, Strat.AGE_18_TO_24, 'fig6_weight_class_model_age_18_24', 'Age 18-24', 'Population aged 18-24 (%)')
     visualisation5(df, Strat.AGE_45_TO_55, 'fig7_weight_class_model_age_45_55', 'Age 45-55', 'Population aged 45-55 (%)')
 
+    # exercise vs weight class
+    visualisation6(df)
+
     # todo: 
     # - diet vs income
-    # - exercise vs weight class
 
 
 if __name__ == "__main__":
