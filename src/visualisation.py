@@ -1,6 +1,3 @@
-import matplotlib
-import matplotlib.pyplot as plt
-
 from src.lib.db import load_df_from_db
 from src.utils import ensure_dir
 
@@ -13,11 +10,6 @@ from src.visualisations.vis5 import visualisation5
 from src.enums import Strat
 
 # https://matplotlib.org/stable/gallery/color/named_colors.html
-
-matplotlib.use('tkagg')
-
-# https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html
-plt.style.use("seaborn-v0_8")
 
 def visualise_data():
     df = load_df_from_db()
