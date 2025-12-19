@@ -35,9 +35,6 @@ def visualise_data():
     # exercise vs weight class
     visualisation6()
 
-    # todo: 
-    # - diet vs income
-
 
 if __name__ == "__main__":
     visualise_data()
